@@ -1,0 +1,5 @@
+---
+ - name: this is task to install git 
+   yum: 
+     name: git 
+     state:  latest  

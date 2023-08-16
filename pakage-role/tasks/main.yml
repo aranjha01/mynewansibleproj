@@ -1,0 +1,5 @@
+---
+ - name : install git 
+   import_tasks: git.yml 
+ - name: starting services 
+   import_tasks: service.yml

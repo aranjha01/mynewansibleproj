@@ -1,0 +1,3 @@
+---
+ - name: checking memory and psuhing it into a file under /tmp
+   shell: free -h . /tmp/memstats
