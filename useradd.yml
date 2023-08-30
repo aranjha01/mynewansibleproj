@@ -1,0 +1,11 @@
+---
+- name: Add a new user
+  hosts: all  # Replace with your host or group of hosts
+  become: true              # Run tasks with sudo or become user
+
+  tasks:
+    - name: Create a new user
+      user:
+        name: ahsan       # Change to the desired username
+        password: "{{ 'ahsan' | password_hash('sha512') }}"
+        state: present

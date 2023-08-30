@@ -1,0 +1,17 @@
+---
+- name: thisis my first play boook
+  hosts: all
+  tasks: 
+   - name: start httpd package
+     yum:
+       name: httpd  
+       state: installed
+
+   - name: start httpd service
+     service:
+       name: httpd
+       state: started
+
+   - name:  using command module 
+     ansible.builtin.command: ls /home/ahsan 
+     register: myoutput        
