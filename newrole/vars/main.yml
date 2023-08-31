@@ -1,0 +1,4 @@
+---
+# vars file for newrole
+package_name: httpd
+package_state: present

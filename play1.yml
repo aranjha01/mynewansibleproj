@@ -1,0 +1,43 @@
+---
+- name: THIS IS MY FIRST PLAY.
+  hosts: all
+  become: yes
+  tasks:
+    
+
+    - name : installing httpd service 
+      yum: 
+        name: httpd
+        state: latest
+
+
+    - name: starting httpd service 
+      service: 
+        name: httpd 
+        state: started
+
+- name: THIS IS MY 2ND PLAY.
+  hosts: new-vms
+  become: yes
+  tasks:
+  
+
+    #- name: install EPEL-RELEASE
+     # yum: 
+       # name: epel-release
+        #state: present
+    #- name: update the epel repo
+     # yum:
+      #  name: '*'
+       # state: latest     
+ 
+    - name: this is my second task 
+      yum: 
+        name: mariadb-server
+        state: latest 
+
+    - name: starting the service in second task in second play 
+      service: 
+        name: mariadb
+        state: started
+

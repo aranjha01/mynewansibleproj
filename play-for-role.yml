@@ -1,0 +1,7 @@
+---
+- name: calling role to run
+  hosts: all
+  roles: 
+    - newrole
+     
+

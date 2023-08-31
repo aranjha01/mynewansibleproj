@@ -1,0 +1,38 @@
+---
+- name: creating website /webserver
+  hosts: new-vms
+  become: yes
+  vars:
+   p1: httpd
+   p2: firewalld
+
+  tasks:
+ 
+  - name: install httpd
+    yum:
+      name: "{{ p1 }}"
+      state: latest
+
+
+  - name: creating directory
+    ansible.builtin.file:
+      path: /var/www/html/index.html
+      state: touch
+      mode: u=rwx,g=rwx,o=rwx
+
+
+
+  - name: copy index.html
+    copy:
+      src: index.html
+      dest: /var/www/html/index.html
+
+  - name: restart httpd
+    service:
+      name: "{{ p1 }}"
+      state: restarted 
+
+  - name: stop firewall
+    service:
+      name: "{{ p2 }}" 
+      state: stopped  

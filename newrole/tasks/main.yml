@@ -1,0 +1,10 @@
+---
+# tasks file for newrole
+- name: this is my task for newrole
+  yum:
+    name: httpd
+    state: latest
+- name: this is my task for newrole
+  yum:
+    name: httpd
+    state: removed
