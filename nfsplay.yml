@@ -1,0 +1,128 @@
+---
+ - name: This is the playbopok to setup nfs-server . 
+   hosts: 192.168.1.15
+   become: true
+   vars:
+     p1: nfs-utils
+     p2: exportfs -avr
+     p3: firewalld 
+   tasks:
+    - name: To install nfs server
+      yum: 
+        name: "{{ p1 }}"
+        state: latest 
+
+    - name:  To make a export directory 
+      ansible.builtin.file:
+        path: /mnt/exports
+        state: directory 
+        mode: 0755  
+
+    - name: To make an entery to etc exports
+      lineinfile:
+        path: /etc/exports
+        line: "/mnt/exports *(rw,sync,no_root_squash,no_subtree_check)"
+        insertafter: EOF 
+
+    - name: Execute command to export 
+      command: "{{p2}}" 
+
+    - name: starting the nfs service 
+      systemd:
+        name: nfs-server
+        state: restarted 
+        enabled: yes
+      
+    - name: Disabling se linux 
+      selinux: 
+        state: disabled
+
+    - name: adding ports
+      firewalld:
+       
+       port: "{{ item }}" 
+       permanent: yes        
+       immediate: yes
+       state: enabled
+      loop:
+       - 2049/tcp
+       - 2049/udp
+       - 20048/tcp
+       - 20048/tcp
+       - 111/tcp
+       - 111/udp
+
+
+    - name: restarting firewalld
+      service:
+        name: "{{ p3 }}" 
+        state: restarted  
+
+
+ - name:  Second play for  nfs clients 
+   hosts: all:!192.168.1.15
+   become: true
+   vars:
+    p1: nfs-utils
+    p2: exportfs -avr
+    p3: firewalld 
+
+   tasks:
+    - name: installing nfs server
+      yum: 
+       name: "{{ p1 }}"
+       state: latest 
+
+    - name: starting the nfs service 
+      systemd:
+        name: nfs-server
+        state: restarted 
+        enabled: yes    
+
+
+    - name: To make a export directory 
+      ansible.builtin.file:
+        path: /mnt/shared-dir
+        state: directory 
+        mode: 0755             
+
+
+    - name: Disabling se linux 
+      selinux: 
+       state: disabled  
+
+
+    - name: Execute command to export 
+      command: " mount -t  nfs 192.168.1.15:/mnt/exports /mnt/shared-dir "
+
+    - name: Execute command to export 
+      command: "mount -a" 
+
+
+    - name: To make an entery to etc/fstab
+      lineinfile:
+        path: /etc/fstab 
+        line: " 192.168.1.15:/mnt/exports /mnt/shared-dir  nfs defaults 0 0 "
+        state: present     
+
+
+    - name: restarting firewalld
+      service: 
+        name: "{{ p3 }}" 
+        state: restarted
+         
+    - name: adding ports
+      firewalld:
+        port: "{{ item }}" 
+        permanent: yes        
+        immediate: yes
+        state: enabled 
+      loop:
+       - 2049/tcp
+       - 2049/udp
+       - 20048/tcp
+       - 20048/tcp
+       - 111/tcp
+       - 111/udp    
+
+       
