@@ -1,0 +1,9 @@
+---
+- name: this is my playbook 
+  hosts: all
+  tasks:
+  - name: gatyhetrring facts
+    debug: 
+      var: ansible_nodename
+    when: ansible_nodename == " centos1 "
+ 
